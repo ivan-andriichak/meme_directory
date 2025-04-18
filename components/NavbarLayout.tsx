@@ -1,9 +1,10 @@
 "use client";
 
+import { Navbar, NavbarItem } from "@heroui/navbar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function NavbarLayout() {
   const pathname = usePathname();
@@ -12,32 +13,34 @@ export default function NavbarLayout() {
     pathname === path || (path === "/table" && pathname === "/");
 
   return (
-    <nav className="bg-gray-800 dark:bg-gray-900 shadow-md">
+    <Navbar className="bg-gray-800 dark:bg-gray-900 shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex space-x-4">
-          <Link
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+          <NavbarItem
+            as={Link}
+            className={
               isActive("/table")
-                ? "bg-indigo-500 text-white"
-                : "text-gray-300 hover:bg-indigo-400 hover:text-white"
-            }`}
+                ? "text-indigo-400"
+                : "text-gray-300 hover:text-indigo-300"
+            }
             href="/table"
           >
             Table
-          </Link>
-          <Link
-            className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+          </NavbarItem>
+          <NavbarItem
+            as={Link}
+            className={
               isActive("/list")
-                ? "bg-indigo-500 text-white"
-                : "text-gray-300 hover:bg-indigo-400 hover:text-white"
-            }`}
+                ? "text-indigo-400"
+                : "text-gray-300 hover:text-indigo-300"
+            }
             href="/list"
           >
             List
-          </Link>
+          </NavbarItem>
         </div>
         <ThemeToggle />
       </div>
-    </nav>
+    </Navbar>
   );
 }

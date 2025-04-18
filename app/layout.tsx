@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import React from "react";
 
 import NavbarLayout from "@/components/NavbarLayout";
+import { MemesProvider } from "@/contexts/MemeContext";
+import { Providers } from "@/app/providers";
 
 export const metadata = {
   title: "Meme Directory",
@@ -14,10 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className="font-light dark" lang="en">
+    <html lang="en">
       <body className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-        <NavbarLayout />
-        <main className="container mx-auto px-4 py-8">{children}</main>
+        <Providers>
+          <MemesProvider>
+            <NavbarLayout />
+            <main className="container mx-auto px-4 py-8">{children}</main>
+          </MemesProvider>
+        </Providers>
       </body>
     </html>
   );

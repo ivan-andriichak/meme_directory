@@ -1,6 +1,5 @@
 "use client";
 
-// import "@heroui/react/styles.css";
 import {
   Button,
   Input,
@@ -12,82 +11,79 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { Key, useEffect, useState } from "react";
 import { ModalBody, ModalFooter, ModalHeader } from "@heroui/modal";
+import { useEffect, useState } from "react";
 
+import { validateMeme } from "@/utils/validation";
 import { loadMemes, saveMemes } from "@/utils/storage";
 import { memesInit } from "@/data/memes";
+import { IMeme } from "@/interfaces/IMeme";
 
 export const MemeTable = () => {
-  const [memes, setMemes] = useState<any[]>(memesInit);
-  const [selectedMeme, setSelectedMeme] = useState<{
-    id: Key;
-    title: string;
-    likes: number;
-    image?: string;
-  } | null>(null);
-
+  const [memes, setMemes] = useState<IMeme[]>(memesInit);
+  const [selectedMeme, setSelectedMeme] = useState<IMeme | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const loadedMemes = loadMemes();
 
-    if (loadedMemes && loadedMemes.length > 0) {
+    if (loadedMemes.length > 0) {
       setMemes(loadedMemes);
     }
   }, []);
 
-  const handleEdit = (meme: {
-    id: Key;
-    title: string;
-    likes: number;
-    image?: string;
-  }) => {
+  const handleEdit = (meme: IMeme) => {
     setSelectedMeme(meme);
     setIsOpen(true);
   };
 
   const handleSave = () => {
-    const updated = memes.map(
-      (m: { id: Key; title: string; likes: number; image?: string }) =>
-        m.id === selectedMeme?.id ? { ...m, ...selectedMeme } : m,
-    );
+    if (selectedMeme) {
+      const validationError = validateMeme(selectedMeme);
 
-    setMemes(updated);
-    saveMemes(updated);
-    setIsOpen(false);
+      if (validationError) {
+        alert(validationError);
+
+        return;
+      }
+
+      const updated = memes.map((m) =>
+        m.id === selectedMeme.id ? { ...m, ...selectedMeme } : m,
+      );
+
+      setMemes(updated);
+      saveMemes(updated);
+      setIsOpen(false);
+    }
   };
 
   return (
     <>
-      <Button color="primary" variant="solid">
-        Solid
-      </Button>
       <Table aria-label="Memes table">
         <TableHeader>
           <TableColumn key="id">ID</TableColumn>
-          <TableColumn key="title">Назва</TableColumn>
-          <TableColumn key="likes">Лайки</TableColumn>
+          <TableColumn key="title">Title</TableColumn>
+          <TableColumn key="likes">Like</TableColumn>
           <TableColumn key="actions">Actions</TableColumn>
         </TableHeader>
         <TableBody>
-          {memes.map(
-            (item: {
-              id: Key;
-              title: string;
-              likes: number;
-              image?: string;
-            }) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.title}</TableCell>
-                <TableCell>{item.likes}</TableCell>
-                <TableCell>
-                  <Button onPress={() => handleEdit(item)}>Edit</Button>
-                </TableCell>
-              </TableRow>
-            ),
-          )}
+          {memes.map((item) => (
+            <TableRow key={item.id}>
+              <TableCell>{item.id}</TableCell>
+              <TableCell>{item.title}</TableCell>
+              <TableCell>{item.likes}</TableCell>
+              <TableCell>
+                <Button
+                  data-hero-ui
+                  color="primary"
+                  variant="shadow"
+                  onPress={() => handleEdit(item)}
+                >
+                  Edit
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
 
@@ -124,7 +120,9 @@ export const MemeTable = () => {
           />
         </ModalBody>
         <ModalFooter>
-          <Button onPress={handleSave}>Зберегти</Button>
+          <Button data-hero-ui onPress={handleSave}>
+            Save
+          </Button>
         </ModalFooter>
       </Modal>
     </>

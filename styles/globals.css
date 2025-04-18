@@ -5,3 +5,36 @@
 html, body {
     @apply min-h-screen bg-gray-50 dark:bg-gray-900;
 }
+
+/* Стилі для HeroUI Button */
+button[data-hero-ui] {
+    @apply px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors;
+}
+
+/* Стилі для HeroUI Table */
+table[data-hero-ui] {
+    @apply w-full border-collapse bg-white dark:bg-gray-800 rounded-lg shadow-md;
+}
+
+table[data-hero-ui] th,
+table[data-hero-ui] td {
+    @apply px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-left;
+}
+
+table[data-hero-ui] th {
+    @apply bg-gray-100 dark:bg-gray-900 font-semibold text-gray-700 dark:text-gray-200;
+}
+
+/* Стилі для HeroUI Modal */
+div[data-hero-ui-modal] {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center;
+}
+
+div[data-hero-ui-modal] > div {
+    @apply bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md;
+}
+
+/* Стилі для HeroUI Input */
+input[data-hero-ui] {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+}
