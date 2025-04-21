@@ -21,14 +21,17 @@ import { IMeme } from "@/interfaces/IMeme";
 
 export const MemeTable = () => {
   const [memes, setMemes] = useState<IMeme[]>(memesInit);
+
   const [selectedMeme, setSelectedMeme] = useState<IMeme | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const loadedMemes = loadMemes();
+    if (typeof window !== "undefined") {
+      const loadedMemes = loadMemes();
 
-    if (loadedMemes.length > 0) {
-      setMemes(loadedMemes);
+      if (loadedMemes && loadedMemes.length > 0) {
+        setMemes(loadedMemes);
+      }
     }
   }, []);
 
@@ -88,42 +91,46 @@ export const MemeTable = () => {
       </Table>
 
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-        <ModalHeader>Редагування мема</ModalHeader>
-        <ModalBody>
-          <Input
-            label="Назва"
-            value={selectedMeme?.title || ""}
-            onChange={(e) =>
-              setSelectedMeme((prev) =>
-                prev ? { ...prev, title: e.target.value } : null,
-              )
-            }
-          />
-          <Input
-            label="URL картинки"
-            value={selectedMeme?.image || ""}
-            onChange={(e) =>
-              setSelectedMeme((prev) =>
-                prev ? { ...prev, image: e.target.value } : null,
-              )
-            }
-          />
-          <Input
-            label="Кількість лайків"
-            type="number"
-            value={selectedMeme?.likes?.toString() || "0"}
-            onChange={(e) =>
-              setSelectedMeme((prev) =>
-                prev ? { ...prev, likes: parseInt(e.target.value) || 0 } : null,
-              )
-            }
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button data-hero-ui onPress={handleSave}>
-            Save
-          </Button>
-        </ModalFooter>
+        <div data-hero-ui-modal="">
+          <ModalHeader>Редагування мема</ModalHeader>
+          <ModalBody>
+            <Input
+              label="Назва"
+              value={selectedMeme?.title || ""}
+              onChange={(e) =>
+                setSelectedMeme((prev) =>
+                  prev ? { ...prev, title: e.target.value } : null,
+                )
+              }
+            />
+            <Input
+              label="URL картинки"
+              value={selectedMeme?.image || ""}
+              onChange={(e) =>
+                setSelectedMeme((prev) =>
+                  prev ? { ...prev, image: e.target.value } : null,
+                )
+              }
+            />
+            <Input
+              label="Кількість лайків"
+              type="number"
+              value={selectedMeme?.likes?.toString() || "0"}
+              onChange={(e) =>
+                setSelectedMeme((prev) =>
+                  prev
+                    ? { ...prev, likes: parseInt(e.target.value) || 0 }
+                    : null,
+                )
+              }
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button data-hero-ui onPress={handleSave}>
+              Save
+            </Button>
+          </ModalFooter>
+        </div>
       </Modal>
     </>
   );

@@ -1,13 +1,12 @@
-import Cookies from "js-cookie";
-
 import { IMeme } from "@/interfaces/IMeme";
-
-export const loadMemes = (): IMeme[] => {
-  const memes = Cookies.get("memes");
-
-  return memes ? JSON.parse(memes) : [];
+// saveMemes
+export const saveMemes = (memes: IMeme[]) => {
+  localStorage.setItem("memes", JSON.stringify(memes));
 };
 
-export const saveMemes = (memes: IMeme[]) => {
-  Cookies.set("memes", JSON.stringify(memes), { expires: 7 });
+// loadMemes
+export const loadMemes = (): IMeme[] => {
+  const storedMemes = localStorage.getItem("memes");
+
+  return storedMemes ? JSON.parse(storedMemes) : [];
 };

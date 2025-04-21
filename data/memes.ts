@@ -40,25 +40,25 @@ export const memesInit: IMeme[] = [
   {
     id: 7,
     title: "Pepe the Frog",
-    image: "https://images.unsplash.com/photo-1608848461950-0fe51dfc41cb", // Оновлено
+    image: "https://images.unsplash.com/photo-1608848461950-0fe51dfc41cb",
     likes: 12,
   },
   {
     id: 8,
     title: "Bad Luck Brian",
-    image: "https://images.unsplash.com/photo-1561948955-570b270e7c36", // Оновлено
+    image: "https://images.unsplash.com/photo-1561948955-570b270e7c36",
     likes: 66,
   },
   {
     id: 9,
     title: "Overly Attached Girlfriend",
-    image: "https://images.unsplash.com/photo-1574158622682-e40e6e4b7c33", // Оновлено
+    image: "https://images.unsplash.com/photo-1593642532973-d31b6557fa68",
     likes: 34,
   },
   {
     id: 10,
     title: "Scumbag Steve",
-    image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1", // Оновлено
+    image: "https://images.unsplash.com/photo-1543466835-00a7907e9de1",
     likes: 22,
   },
 ];

@@ -1,44 +1,60 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
-import { loadMemes, saveMemes } from "@/utils/storage";
-import { memesInit } from "@/data/memes";
 import { IMeme } from "@/interfaces/IMeme";
+import { memesInit } from "@/data/memes";
 
-interface MemesContextType {
+interface MemeContextProps {
   memes: IMeme[];
   setMemes: (memes: IMeme[]) => void;
 }
 
-const MemesContext = createContext<MemesContextType | undefined>(undefined);
+const MemeContext = createContext<MemeContextProps | undefined>(undefined);
 
-export const MemesProvider = ({ children }: { children: React.ReactNode }) => {
+export function MemesProvider({ children }: { children: React.ReactNode }) {
   const [memes, setMemes] = useState<IMeme[]>(memesInit);
 
   useEffect(() => {
-    const loaded = loadMemes();
+    try {
+      const savedMemes = Cookies.get("memes");
 
-    if (loaded.length > 0) {
-      setMemes(loaded);
-    } else {
-      saveMemes(memesInit);
+      if (savedMemes) {
+        const parsedMemes = JSON.parse(savedMemes);
+
+        if (Array.isArray(parsedMemes) && parsedMemes.length > 0) {
+          setMemes(parsedMemes);
+        }
+      } else {
+        Cookies.set("memes", JSON.stringify(memesInit), { expires: 7 });
+      }
+    } catch (error) {
+      console.error("Failed to load memes from cookies:", error);
     }
   }, []);
 
-  return (
-    <MemesContext.Provider value={{ memes, setMemes }}>
-      {children}
-    </MemesContext.Provider>
-  );
-};
+  useEffect(() => {
+    try {
+      Cookies.set("memes", JSON.stringify(memes), { expires: 7 });
+    } catch (error) {
+      console.error("Failed to save memes to cookies:", error);
+    }
+  }, [memes]);
 
-export const useMemes = () => {
-  const context = useContext(MemesContext);
+  return (
+    <MemeContext.Provider value={{ memes, setMemes }}>
+      {children}
+    </MemeContext.Provider>
+  );
+}
+
+export function useMemes() {
+  const context = useContext(MemeContext);
 
   if (!context) {
     throw new Error("useMemes must be used within a MemesProvider");
   }
 
   return context;
-};
+}
