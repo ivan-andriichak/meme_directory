@@ -1,53 +1,81 @@
-# Next.js & HeroUI Template
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+# Meme Directory — Next.js 14 + HeroUI v2
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+A modern responsive meme directory app with editable meme entries, built using **Next.js 14**, **HeroUI**, and **Tailwind CSS**.
 
-## Technologies Used
+🔗 [Live Demo on Railway](https://your-app-url.railway.app)
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
+---
+
+## 🛠 Tech Stack
+
+- [Next.js 14 (App Router)](https://nextjs.org/docs)
 - [HeroUI v2](https://heroui.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
 - [next-themes](https://github.com/pacocoursey/next-themes)
+- [Framer Motion](https://www.framer.com/motion/)
+- [localStorage + cookies (for persistence)](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 
-## How to Use
+---
 
-### Use the template with create-next-app
+## ✨ Features
 
-To create a new project based on this template using `create-next-app`, run the following command:
+✅ Two views:
+- **Table** view of memes with edit modal  
+- **Card grid** view with images, likes and links
+
+✅ Dark / Light theme switcher
+
+✅ Meme editing in modal (title, image URL, likes)
+
+✅ Meme data persistence using `localStorage`
+
+✅ Responsive layout
+
+✅ Deployed on [Railway](https://railway.app)
+
+---
+
+## 📦 Installation
 
 ```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
-```
-
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
-```bash
+git clone https://github.com/your-username/meme-directory
+cd meme-directory
 npm install
 ```
 
-### Run the development server
+---
+
+## 🚀 Run Locally
 
 ```bash
 npm run dev
 ```
 
-### Setup pnpm (optional)
+App will be available at [http://localhost:3000](http://localhost:3000)
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+---
 
-```bash
-public-hoist-pattern[]=*@heroui/*
+## ⚙️ Project Structure
+
 ```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+.
+├── app
+│   ├── layout.tsx        // Global layout (theme, navbar)
+│   ├── page.tsx          // Default route (redirect or intro)
+│   ├── table/page.tsx    // Table view of memes
+│   ├── list/page.tsx     // Grid view of memes
+├── components
+│   ├── NavbarLayout.tsx
+│   ├── MemeTable.tsx
+│   ├── MemeCardGrid.tsx
+│   ├── EditMemeModal.tsx
+├── contexts
+│   └── MemeContext.tsx
+├── data
+│   └── memes.ts          // Initial memes
+├── utils
+│   ├── validation.ts     // Meme field validation
+│   └── storage.ts        // localStorage/cookie persistence
+```
