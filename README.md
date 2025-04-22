@@ -33,7 +33,7 @@ A modern responsive meme directory app with editable meme entries, built using *
 
 ✅ Responsive layout
 
-✅ Deployed on [Railway](https://railway.app)
+✅ Deployed on [Railway](https://memedirectory-production.up.railway.app)
 
 ---
 
