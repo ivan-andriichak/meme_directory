@@ -1,37 +1,42 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { Button } from "@heroui/react";
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark =
-      storedTheme === "dark" ||
-      (!storedTheme &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-
-    setIsDark(prefersDark);
-    document.documentElement.classList.toggle("dark", prefersDark);
+    setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = isDark ? "light" : "dark";
+  if (!mounted) {
+    return (
+      <div
+        aria-hidden="true"
+        className="ml-4 p-2 rounded-lg w-[36px] h-[36px]"
+      />
+    );
+  }
 
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", !isDark);
-    setIsDark(!isDark);
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
-    <button
+    <Button
       aria-label="Toggle Theme"
-      className="ml-4 p-2 rounded-lg transition-colors duration-200 hover:bg-gray-700 text-gray-300 hover:text-white"
-      onClick={toggleTheme}
+      data-hero-ui="theme-toggle"
+      onPress={toggleTheme}
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
+      {theme === "dark" ? (
+        <Sun className="w-5 h-5" />
+      ) : (
+        <Moon className="w-5 h-5" />
+      )}
+    </Button>
   );
 }

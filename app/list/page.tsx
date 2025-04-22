@@ -9,14 +9,14 @@ export default function ListPage() {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100 dark:bg-gray-900">
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white text-center">
+      <div className="text-3xl font-bold mb-6 text-gray-900 dark:text-amber-100 text-center">
         Meme List
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {memes.map((meme) => (
           <Card
             key={meme.id}
-            className="bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300"
+            className=" p-3 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow duration-300"
           >
             <CardHeader className="font-semibold text-lg text-gray-900 dark:text-gray-100">
               {meme.title}

@@ -29,7 +29,7 @@ export const memesInit: IMeme[] = [
     id: 5,
     title: "Doge",
     image: "https://images.unsplash.com/photo-1534361960057-19889db9621e",
-    likes: 767,
+    likes: 76,
   },
   {
     id: 6,

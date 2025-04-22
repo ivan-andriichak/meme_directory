@@ -1,10 +1,10 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import Cookies from "js-cookie";
 
 import { IMeme } from "@/interfaces/IMeme";
 import { memesInit } from "@/data/memes";
+import { loadMemes, saveMemes } from "@/utils/storage";
 
 interface MemeContextProps {
   memes: IMeme[];
@@ -17,28 +17,28 @@ export function MemesProvider({ children }: { children: React.ReactNode }) {
   const [memes, setMemes] = useState<IMeme[]>(memesInit);
 
   useEffect(() => {
-    try {
-      const savedMemes = Cookies.get("memes");
+    if (typeof window !== "undefined") {
+      try {
+        const loadedMemes = loadMemes();
 
-      if (savedMemes) {
-        const parsedMemes = JSON.parse(savedMemes);
-
-        if (Array.isArray(parsedMemes) && parsedMemes.length > 0) {
-          setMemes(parsedMemes);
+        if (loadedMemes.length > 0) {
+          setMemes(loadedMemes);
+        } else {
+          saveMemes(memesInit);
         }
-      } else {
-        Cookies.set("memes", JSON.stringify(memesInit), { expires: 7 });
+      } catch (error) {
+        console.error("Error loading memes:", error);
       }
-    } catch (error) {
-      console.error("Failed to load memes from cookies:", error);
     }
   }, []);
 
   useEffect(() => {
-    try {
-      Cookies.set("memes", JSON.stringify(memes), { expires: 7 });
-    } catch (error) {
-      console.error("Failed to save memes to cookies:", error);
+    if (typeof window !== "undefined") {
+      try {
+        saveMemes(memes);
+      } catch (error) {
+        console.error("Failed to save memes:", error);
+      }
     }
   }, [memes]);
 

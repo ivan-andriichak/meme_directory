@@ -2,8 +2,6 @@
 
 import {
   Button,
-  Input,
-  Modal,
   Table,
   TableBody,
   TableCell,
@@ -11,73 +9,130 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { ModalBody, ModalFooter, ModalHeader } from "@heroui/modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { validateMeme } from "@/utils/validation";
-import { loadMemes, saveMemes } from "@/utils/storage";
-import { memesInit } from "@/data/memes";
+import { useMemes } from "@/contexts/MemeContext";
 import { IMeme } from "@/interfaces/IMeme";
+import { validateMeme } from "@/utils/validation";
+import { EditMemeModal } from "@/components/EditMemeModal";
+import { generateMemesFile } from "@/utils/storage";
 
 export const MemeTable = () => {
-  const [memes, setMemes] = useState<IMeme[]>(memesInit);
-
+  const { memes, setMemes } = useMemes();
   const [selectedMeme, setSelectedMeme] = useState<IMeme | null>(null);
+  const [newMeme, setNewMeme] = useState<IMeme>({
+    id: 0,
+    title: "",
+    image: "",
+    likes: 0,
+  });
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const loadedMemes = loadMemes();
-
-      if (loadedMemes && loadedMemes.length > 0) {
-        setMemes(loadedMemes);
-      }
-    }
-  }, []);
+  const [isAddMode, setIsAddMode] = useState(false);
 
   const handleEdit = (meme: IMeme) => {
     setSelectedMeme(meme);
+    setIsAddMode(false);
     setIsOpen(true);
   };
 
+  const handleAdd = () => {
+    setNewMeme({ id: memes.length + 1, title: "", image: "", likes: 0 });
+    setIsAddMode(true);
+    setIsOpen(true);
+  };
+
+  const handleChange = (updated: IMeme) => {
+    if (isAddMode) {
+      setNewMeme(updated);
+    } else {
+      setSelectedMeme(updated);
+    }
+  };
+
   const handleSave = () => {
-    if (selectedMeme) {
-      const validationError = validateMeme(selectedMeme);
+    const memeToSave = isAddMode ? newMeme : selectedMeme;
 
-      if (validationError) {
-        alert(validationError);
+    if (!memeToSave) return;
 
-        return;
-      }
+    const validationError = validateMeme(memeToSave);
 
+    if (validationError) {
+      alert(validationError);
+
+      return;
+    }
+
+    if (isAddMode) {
+      const updated = [...memes, { ...newMeme, id: memes.length + 1 }];
+
+      setMemes(updated);
+    } else if (selectedMeme) {
       const updated = memes.map((m) =>
         m.id === selectedMeme.id ? { ...m, ...selectedMeme } : m,
       );
 
       setMemes(updated);
-      saveMemes(updated);
-      setIsOpen(false);
     }
+    setIsOpen(false);
+  };
+
+  const handleDownload = () => {
+    const dataUrl = generateMemesFile(memes);
+    const link = document.createElement("a");
+
+    link.href = dataUrl;
+    link.download = "memes.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <>
-      <Table aria-label="Memes table">
+      <div className="flex space-x-4 mb-4">
+        <Button
+          data-hero-ui
+          color="primary"
+          variant="shadow"
+          onPress={handleAdd}
+        >
+          Add Meme
+        </Button>
+        <Button
+          data-hero-ui
+          color="secondary"
+          variant="shadow"
+          onPress={handleDownload}
+        >
+          Download Memes
+        </Button>
+      </div>
+      <Table
+        data-hero-ui
+        fullWidth
+        removeWrapper
+        aria-label="Memes table"
+        className="overflow-x-auto"
+      >
         <TableHeader>
-          <TableColumn key="id">ID</TableColumn>
-          <TableColumn key="title">Title</TableColumn>
-          <TableColumn key="likes">Like</TableColumn>
-          <TableColumn key="actions">Actions</TableColumn>
+          <TableColumn>ID</TableColumn>
+          <TableColumn>Title</TableColumn>
+          <TableColumn>Likes</TableColumn>
+          <TableColumn>Actions</TableColumn>
         </TableHeader>
         <TableBody>
           {memes.map((item) => (
-            <TableRow key={item.id}>
+            <TableRow
+              key={item.id}
+              className="text-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+            >
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.title}</TableCell>
               <TableCell>{item.likes}</TableCell>
               <TableCell>
                 <Button
                   data-hero-ui
+                  className="my-2"
                   color="primary"
                   variant="shadow"
                   onPress={() => handleEdit(item)}
@@ -90,48 +145,13 @@ export const MemeTable = () => {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-        <div data-hero-ui-modal="">
-          <ModalHeader>Редагування мема</ModalHeader>
-          <ModalBody>
-            <Input
-              label="Назва"
-              value={selectedMeme?.title || ""}
-              onChange={(e) =>
-                setSelectedMeme((prev) =>
-                  prev ? { ...prev, title: e.target.value } : null,
-                )
-              }
-            />
-            <Input
-              label="URL картинки"
-              value={selectedMeme?.image || ""}
-              onChange={(e) =>
-                setSelectedMeme((prev) =>
-                  prev ? { ...prev, image: e.target.value } : null,
-                )
-              }
-            />
-            <Input
-              label="Кількість лайків"
-              type="number"
-              value={selectedMeme?.likes?.toString() || "0"}
-              onChange={(e) =>
-                setSelectedMeme((prev) =>
-                  prev
-                    ? { ...prev, likes: parseInt(e.target.value) || 0 }
-                    : null,
-                )
-              }
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button data-hero-ui onPress={handleSave}>
-              Save
-            </Button>
-          </ModalFooter>
-        </div>
-      </Modal>
+      <EditMemeModal
+        isOpen={isOpen}
+        meme={isAddMode ? newMeme : selectedMeme}
+        onChangeAction={handleChange}
+        onCloseAction={() => setIsOpen(false)}
+        onSaveAction={handleSave}
+      />
     </>
   );
 };
