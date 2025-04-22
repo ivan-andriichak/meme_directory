@@ -40,7 +40,7 @@ A modern responsive meme directory app with editable meme entries, built using *
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/your-username/meme-directory
+git clone https://github.com/ivan-andriichak/meme_directory.git
 cd meme-directory
 npm install
 ```
